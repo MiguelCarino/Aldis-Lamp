@@ -1,0 +1,49 @@
+{
+  "name": "Aldis Lamp",
+  "short_name": "Aldis",
+  "description": "Speak and a signal lamp says it in Morse — on screen, on the phone torch, as a tone. Point the camera at a lamp to read one back. Works with no connection.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "categories": [
+    "utilities",
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Signal light",
+      "short_name": "Signal",
+      "description": "Open straight into the fullscreen light, ready to send.",
+      "url": "./?do=strobe",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

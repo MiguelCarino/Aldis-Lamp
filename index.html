@@ -6,6 +6,10 @@
 <link rel="icon" type="image/webp" href="logo.webp">
 <title>Aldis Lamp</title>
 <meta name="description" content="Speak, and a signal lamp sends it in Morse — on screen, in fullscreen, on the phone torch and as a sidetone. Point the camera at a light to read a lamp back. Runs entirely in the browser.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#050505">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="fonts/carino-fonts.css">
 <style>
 :root{
@@ -19,6 +23,10 @@
   --radius:10px;
 }
 *{box-sizing:border-box}
+/* .btn and .field set display on a class, which outranks the UA's own
+   [hidden]{display:none} — without this, every hidden control renders as an
+   empty pill. */
+[hidden]{display:none !important}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
 h1,h2,h3{font-family:var(--display);margin:0}
 button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
@@ -178,6 +186,22 @@ input[type=range]{width:100%;accent-color:var(--accent);background:transparent}
 .meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .12s linear}
 .meter i.weak{background:var(--err)}
 
+/* ---------- offline readiness ---------- */
+.ready{display:flex;flex-direction:column;gap:7px;margin-bottom:9px}
+.ready-row{display:flex;align-items:center;gap:9px;font-size:.84rem;color:var(--text-sec)}
+.ready-row .dot{width:7px;height:7px;border-radius:50%;background:#333;flex-shrink:0}
+.ready-row .dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.ready-row .dot.busy{background:var(--info);animation:pulse 1.1s ease-in-out infinite}
+.ready-row .dot.warn{background:var(--warn)}
+.ready-row .dot.err{background:var(--err)}
+.ready-row .ready-text{flex:1 1 auto;min-width:0}
+.ready-row .btn{padding:4px 9px;font-size:.74rem;flex-shrink:0}
+.offline-badge{
+  display:none;align-items:center;gap:7px;margin-bottom:2px;padding:7px 10px;border-radius:6px;
+  background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.35);color:var(--err);font-size:.8rem;
+}
+body.net-offline .offline-badge{display:flex}
+
 /* ---------- log ---------- */
 .log{font-family:var(--mono);font-size:.75rem;line-height:1.65;max-height:180px;overflow-y:auto;
   background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
@@ -301,6 +325,7 @@ body.key-on .strobe .exit{opacity:0}
           <span id="micLabel" data-i18n>Start listening</span>
         </button>
         <p class="hint" id="micHint" data-i18n>Speech is transcribed by the browser and queued word by word. Finished words go straight to the lamp.</p>
+        <div class="offline-badge" id="netBadge"><span data-i18n>No connection — the lamp and the decoder still work.</span></div>
 
         <div class="readout-line" id="liveText" style="max-height:5.5em"><span class="readout-empty" data-i18n>Not listening.</span></div>
 
@@ -409,6 +434,24 @@ body.key-on .strobe .exit{opacity:0}
         </label>
 
         <div>
+          <div class="hint" style="margin-bottom:7px" data-i18n>Prepare for offline</div>
+          <div class="ready">
+            <div class="ready-row">
+              <span class="dot" id="swDot"></span>
+              <span class="ready-text" id="swText"></span>
+              <button class="btn mono" id="swBtn" hidden></button>
+            </div>
+            <div class="ready-row">
+              <span class="dot" id="packDot"></span>
+              <span class="ready-text" id="packText"></span>
+              <button class="btn mono" id="packBtn" hidden></button>
+            </div>
+          </div>
+          <label class="switch"><input type="checkbox" id="onDevice" checked><span data-i18n>Recognise speech on-device when possible</span></label>
+          <p class="hint" data-i18n>Do both of these while you still have a connection. After that the lamp, the decoder and — with the pack installed — the microphone all work with the radio off.</p>
+        </div>
+
+        <div>
           <div class="row" style="margin-bottom:6px">
             <div class="hint" style="margin:0" data-i18n>Log</div>
             <button class="btn mono" id="logClear" style="margin-left:auto;padding:3px 8px" data-i18n>Clear</button>
@@ -423,6 +466,7 @@ body.key-on .strobe .exit{opacity:0}
     <h2 data-i18n>About the lamp</h2>
     <p data-i18n>An Aldis lamp is a handheld signalling lamp with a trigger-operated shutter, used at sea to talk between ships without a radio. This page puts one behind your voice: what you say is transcribed, spelled out in Morse, and flashed at a signalling speed you can actually read.</p>
     <p data-i18n>Everything runs in your browser. Audio is transcribed by the browser's own speech engine, the camera image never leaves the page, and nothing is uploaded or stored.</p>
+    <p data-i18n>Add it to your home screen and it keeps working with no connection at all — the light, the decoder, and the microphone too once a speech pack is downloaded.</p>
     <p><kbd>M</kbd> <span data-i18n>microphone</span> · <kbd>F</kbd> <span data-i18n>fullscreen strobe</span> · <kbd>Space</kbd> <span data-i18n>pause or resume</span> · <kbd>Esc</kbd> <span data-i18n>stop</span></p>
   </section>
 </main>
@@ -768,7 +812,7 @@ function setKey(on, sym) {
 /* ------------------------------------------------------------
    6. State + rendering
    ------------------------------------------------------------ */
-const DEFAULTS = { wpm:10, fw:10, txAlpha:'auto', rxAlpha:'itu', outScreen:true, outTone:false, outTorch:false, toneFreq:600, srLang:'auto', roi:26 };
+const DEFAULTS = { wpm:10, fw:10, txAlpha:'auto', rxAlpha:'itu', outScreen:true, outTone:false, outTorch:false, toneFreq:600, srLang:'auto', roi:26, onDevice:true };
 const state = Object.assign({}, DEFAULTS);
 
 function saveState() {
@@ -861,6 +905,7 @@ function log(kind, text) {
    ------------------------------------------------------------ */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recog = null, listening = false, interimText = '';
+let restarts = 0, restartWindow = 0;
 
 const SR_LANGS = [
   ['auto', 'Follow site language'],
@@ -878,6 +923,125 @@ function srLang() {
   return FLEET_TO_SR[l] || 'en-US';
 }
 
+/* ------------------------------------------------------------
+   7a. Offline readiness
+   The lamp, the keyer and the decoder never touch the network. The
+   recogniser is the exception: by default Chrome streams the audio to
+   Google and fails with error 'network' when it cannot. Chrome 139 can
+   run it on-device instead, once a language pack has been fetched — so
+   the honest thing is to say which of the two you have, and to make the
+   pack something you can fetch deliberately before you leave.
+   ------------------------------------------------------------ */
+const speech = {
+  // 'unsupported' | 'available' | 'downloadable' | 'downloading' | 'unavailable' | 'checking'
+  onDevice: 'checking',
+  installing: false,
+};
+
+// available() and install() must be asked about exactly the same thing, or a
+// pack is fetched that the recogniser then does not count as installed.
+function srOptions() { return { langs: [srLang()], processLocally: true }; }
+
+function hasOnDeviceApi() { return !!(SR && typeof SR.available === 'function'); }
+
+function refreshOnDevice() {
+  if (!hasOnDeviceApi()) { speech.onDevice = 'unsupported'; renderReady(); return Promise.resolve(); }
+  return SR.available(srOptions())
+    .then((status) => { speech.onDevice = String(status); })
+    .catch(() => { speech.onDevice = 'unsupported'; })
+    .then(renderReady);
+}
+
+function installPack() {
+  if (!SR || typeof SR.install !== 'function' || speech.installing) return;
+  speech.installing = true;
+  renderReady();
+  log('sys', tr('Downloading the speech pack…'));
+  SR.install(srOptions())
+    .then((okay) => log(okay ? 'sys' : 'err', okay ? tr('Speech pack installed') : tr('The speech pack could not be downloaded.')))
+    .catch((e) => log('err', tr('The speech pack could not be downloaded.') + ' ' + (e && e.name || '')))
+    .then(() => { speech.installing = false; return refreshOnDevice(); });
+}
+
+// Speech can run with the radio off only when the pack is installed AND the
+// user has not opted out of using it.
+function speechIsLocal() { return state.onDevice && speech.onDevice === 'available'; }
+function speechUsable() { return !!SR && (navigator.onLine || speechIsLocal()); }
+
+function setStatus(el, key, suffix) {
+  el.dataset.i18nKey = key;
+  el.textContent = tr(key) + (suffix || '');
+}
+
+function renderReady() {
+  document.body.classList.toggle('net-offline', !navigator.onLine);
+
+  // --- app files ---
+  const dot = $('swDot'), text = $('swText'), btn = $('swBtn');
+  btn.hidden = true;
+  if (!('serviceWorker' in navigator) || location.protocol.indexOf('http') !== 0) {
+    dot.className = 'dot warn';
+    setStatus(text, 'Open over http(s) to cache the app');
+  } else if (swUpdate) {
+    dot.className = 'dot busy';
+    setStatus(text, 'A new version is ready');
+    btn.hidden = false;
+    setLabel(btn, 'Update');
+  } else if (!swStatus) {
+    dot.className = 'dot';
+    setStatus(text, 'Checking the cache…');
+  } else if (swStatus.ready) {
+    dot.className = 'dot on';
+    setStatus(text, 'App cached — opens with no connection');
+  } else {
+    dot.className = 'dot busy';
+    setStatus(text, 'Caching the app…', ' ' + swStatus.present + '/' + swStatus.required);
+  }
+
+  // --- speech pack ---
+  const pdot = $('packDot'), ptext = $('packText'), pbtn = $('packBtn');
+  pbtn.hidden = true;
+  if (!SR) {
+    pdot.className = 'dot err';
+    setStatus(ptext, 'This browser has no speech recognition');
+  } else if (speech.installing || speech.onDevice === 'downloading') {
+    pdot.className = 'dot busy';
+    setStatus(ptext, 'Downloading the speech pack…');
+  } else if (speech.onDevice === 'available') {
+    pdot.className = 'dot on';
+    setStatus(ptext, 'Speech pack installed', ' · ' + srLang());
+  } else if (speech.onDevice === 'downloadable') {
+    pdot.className = 'dot warn';
+    setStatus(ptext, 'Speech pack not downloaded', ' · ' + srLang());
+    pbtn.hidden = false;
+    setLabel(pbtn, 'Download');
+  } else if (speech.onDevice === 'checking') {
+    pdot.className = 'dot';
+    setStatus(ptext, 'Checking the speech pack…');
+  } else if (speech.onDevice === 'unavailable') {
+    pdot.className = 'dot err';
+    setStatus(ptext, 'No on-device speech for this language', ' · ' + srLang());
+  } else {
+    pdot.className = 'dot err';
+    setStatus(ptext, 'This browser sends speech to a server');
+  }
+
+  // --- the mic button has to tell the truth about what it can do ---
+  if (SR) {
+    const usable = speechUsable();
+    $('micBtn').disabled = !usable && !listening;
+    if (!usable && !listening) {
+      setLabel($('micLabel'), 'Speech needs a connection');
+      setStatus($('micHint'), 'Offline, and no on-device pack for this language — type into the box below and the lamp sends it exactly the same.');
+    } else if (!listening) {
+      setLabel($('micLabel'), 'Start listening');
+      setStatus($('micHint'), speechIsLocal()
+        ? 'Recognised on this device: the audio never leaves it, and it works with no connection.'
+        : 'Speech is transcribed by the browser and queued word by word. Finished words go straight to the lamp.');
+    }
+  }
+}
+
 function setLive(html, cls) {
   $('liveText').innerHTML = html ? '<span class="' + (cls || '') + '">' + esc(html) + '</span>'
                                  : '<span class="readout-empty">' + esc(tr('Not listening.')) + '</span>';
@@ -885,10 +1049,19 @@ function setLive(html, cls) {
 
 function startMic() {
   if (!SR || listening) return;
+  if (!speechUsable()) {
+    log('err', tr('Offline, and no on-device pack for this language — type into the box below and the lamp sends it exactly the same.'));
+    renderReady();
+    return;
+  }
   recog = new SR();
   recog.continuous = true;
   recog.interimResults = true;
   recog.lang = srLang();
+  // Keeps the audio on the device, and is the only thing that makes the
+  // microphone work at all with no connection.
+  if (speechIsLocal() && 'processLocally' in recog) recog.processLocally = true;
+  restarts = 0;
   recog.onresult = (ev) => {
     let interim = '';
     for (let i = ev.resultIndex; i < ev.results.length; i++) {
@@ -905,9 +1078,32 @@ function startMic() {
   recog.onerror = (ev) => {
     if (ev.error === 'no-speech' || ev.error === 'aborted') return;
     log('err', tr('Speech error') + ': ' + ev.error);
+    // 'network' means the server recogniser could not be reached. Restarting
+    // only produces the same error again, forever, behind a button that still
+    // says it is listening — so stop, say why, and re-check whether an
+    // on-device pack could take over.
+    if (ev.error === 'network') {
+      stopMic();
+      log('sys', tr('Offline, and no on-device pack for this language — type into the box below and the lamp sends it exactly the same.'));
+      refreshOnDevice();
+      return;
+    }
     if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') stopMic();
   };
-  recog.onend = () => { if (listening) { try { recog.start(); } catch (e) {} } };
+  // Chrome ends a continuous session on its own every so often; restarting is
+  // normal. A session that ends immediately and repeatedly is not, and a tight
+  // restart loop is indistinguishable from working until you notice nothing is
+  // being transcribed.
+  recog.onend = () => {
+    if (!listening) return;
+    if (++restarts > 8 && performance.now() - restartWindow < 10000) {
+      log('err', tr('Speech recognition keeps dropping — stopped.'));
+      stopMic();
+      return;
+    }
+    if (performance.now() - restartWindow >= 10000) { restarts = 0; restartWindow = performance.now(); }
+    try { recog.start(); } catch (e) {}
+  };
   try { recog.start(); } catch (e) { log('err', String(e && e.message || e)); return; }
   listening = true;
   interimText = '';
@@ -927,6 +1123,7 @@ function stopMic() {
   setLabel($('micLabel'), 'Start listening');
   setLive('');
   renderQueue();
+  renderReady();
 }
 
 // A label the app swaps must carry its i18n key with it, or the next
@@ -1214,6 +1411,52 @@ async function armTorch(on) {
 }
 
 /* ------------------------------------------------------------
+   9a. Service worker — the app itself, cached
+   Offline is the point of this tool, and a page that has to be fetched
+   before it can run is not offline-capable however local its code is.
+   ------------------------------------------------------------ */
+let swReg = null, swStatus = null, swUpdate = false, reloading = false;
+
+function askStatus() {
+  const ctrl = navigator.serviceWorker.controller;
+  if (!ctrl) return;
+  const channel = new MessageChannel();
+  channel.port1.onmessage = (ev) => {
+    if (ev.data && ev.data.type === 'OFFLINE_STATUS') { swStatus = ev.data; renderReady(); }
+  };
+  ctrl.postMessage({ type: 'OFFLINE_STATUS' }, [channel.port2]);
+}
+
+function onController() {
+  // An update only reaches the page after it has asked for one, and old code
+  // running against a new cache is worth avoiding — so that case reloads.
+  if (swUpdate) { if (!reloading) { reloading = true; location.reload(); } return; }
+  askStatus();
+}
+
+function applyUpdate() {
+  if (swReg && swReg.waiting) swReg.waiting.postMessage({ type: 'SKIP_WAITING' });
+}
+
+function initSW() {
+  if (!('serviceWorker' in navigator) || location.protocol.indexOf('http') !== 0) return;
+  navigator.serviceWorker.addEventListener('message', (ev) => {
+    const m = ev.data || {};
+    if (m.type === 'OFFLINE_STATUS') { swStatus = m; renderReady(); }
+    else if (m.type === 'UPDATE_AVAILABLE') { swUpdate = true; renderReady(); }
+  });
+  navigator.serviceWorker.addEventListener('controllerchange', onController);
+  navigator.serviceWorker.register('sw.js').then((reg) => {
+    swReg = reg;
+    if (reg.waiting) { swUpdate = true; renderReady(); }
+    askStatus();
+    // The first install is still filling its cache when this runs.
+    setTimeout(askStatus, 2500);
+    setTimeout(askStatus, 8000);
+  }).catch(() => { /* the cache is best-effort; the app runs without it */ });
+}
+
+/* ------------------------------------------------------------
    10. Strobe — the whole screen becomes the lens
    ------------------------------------------------------------ */
 let strobeOn = false;
@@ -1268,6 +1511,7 @@ function applyControls() {
   $('toneHz').textContent = state.toneFreq + ' Hz';
   $('toneRow').hidden = !state.outTone;
   $('roiSize').value = state.roi;
+  $('onDevice').checked = state.onDevice;
   document.body.classList.toggle('lamp-mute', !state.outScreen);
   renderChips();
 }
@@ -1308,7 +1552,19 @@ function wire() {
   $('srLang').addEventListener('change', (e) => {
     state.srLang = e.target.value; saveState();
     if (listening) { stopMic(); startMic(); }
+    speech.onDevice = 'checking';
+    renderReady();
+    refreshOnDevice();
   });
+  $('onDevice').addEventListener('change', (e) => {
+    state.onDevice = e.target.checked; saveState();
+    if (listening) { stopMic(); startMic(); }
+    renderReady();
+  });
+  $('packBtn').addEventListener('click', installPack);
+  $('swBtn').addEventListener('click', applyUpdate);
+  window.addEventListener('online', () => { renderReady(); refreshOnDevice(); });
+  window.addEventListener('offline', renderReady);
 
   $('outScreen').addEventListener('change', (e) => {
     state.outScreen = e.target.checked;
@@ -1378,7 +1634,9 @@ function repaint() {
   setChip('chipLang', srLang());
   if (!listening) setLive('');
   if (!logRows.length) $('log').innerHTML = '<div class="none">' + esc(tr('No traffic yet.')) + '</div>';
-  renderQueue(); renderCode(); renderRx();
+  renderQueue(); renderCode(); renderRx(); renderReady();
+  // 'Auto' follows the fleet language, so the pack that matters just changed.
+  if (state.srLang === 'auto') refreshOnDevice();
 }
 
 function init() {
@@ -1400,7 +1658,13 @@ function init() {
   $('camPick').innerHTML = '<option value="">' + esc(tr('Default camera')) + '</option>';
   setChip('chipLang', srLang());
   setChip('chipState', tr('Idle'));
-  renderQueue(); renderCode(); renderRx();
+  renderQueue(); renderCode(); renderRx(); renderReady();
+  initSW();
+  refreshOnDevice();
+  // The manifest shortcut lands here. Fullscreen will be refused without a
+  // gesture and that is fine — an installed app has no browser chrome for the
+  // overlay to leave showing anyway.
+  if (new URLSearchParams(location.search).get('do') === 'strobe') setStrobe(true);
   window.addEventListener('carino:langchange', repaint);
   // i18n.js registers its DOMContentLoaded handler after ours; wait it out so
   // the strings this file writes itself start in the right language too.
@@ -1412,7 +1676,7 @@ else init();
 
 // Console handle. Handy for poking at the tables live, and it is what the
 // self-test drives instead of a camera.
-window.Aldis = { encode, timing, tables: TABLES, reverse: REVERSE, prosigns: PROSIGNS, state, tx, rx, rxStep, rxReset, enqueue };
+window.Aldis = { encode, timing, tables: TABLES, reverse: REVERSE, prosigns: PROSIGNS, state, tx, rx, rxStep, rxReset, enqueue, speech, refreshOnDevice };
 })();
 </script>
 

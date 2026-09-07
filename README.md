@@ -14,6 +14,9 @@ Everything runs in the browser. Audio goes through the browser's own speech
 engine, camera frames never leave the page, nothing is uploaded, and there are no
 external requests of any kind.
 
+**It works with the radio off** — see [Offline](#offline), which is the point of
+the thing.
+
 ## What it does
 
 - **Voice → Morse, live.** Continuous speech recognition; each finished word is
@@ -78,6 +81,44 @@ The first flash of a transmission still tells you nothing about its speed, so th
 estimator weights early evidence heavily and then settles down, and the silence
 before the first flash is deliberately not counted as an interval.
 
+## Offline
+
+A signal lamp is what you reach for when there is no network, so a page that has
+to be fetched before it can run is not offline-capable however local its code is.
+Two pieces close that gap, and both are things you do **before** you leave:
+
+**The app caches itself.** `sw.js` precaches every shipped asset on install and
+serves cache-first; open the site once over https, or add it to the home screen,
+and it opens afterwards with nothing at all. The precache list and `VERSION` are
+derived from the repo by `tools/build_sw.py` — a hash of the shipped bytes, not a
+number anyone has to remember to bump:
+
+```
+python3 tools/build_sw.py            # rewrite the generated block
+python3 tools/build_sw.py --check    # non-zero if it has drifted
+```
+
+Run it after changing any shipped file. A file that ships but is not precached is
+a shipped bug, and a stale `VERSION` is a build that every existing install
+ignores forever. The worker also re-reads `index.html`, the manifest and the font
+CSS at install time and caches whatever those declare, so a forgotten run costs
+less than it otherwise would.
+
+**Speech is the one part that is not local by default.** Chrome streams audio to
+Google's servers and fails with `error: 'network'` when it cannot reach them.
+Chrome 139 can run recognition on-device instead, once a language pack has been
+downloaded — so *Prepare for offline* in the settings panel shows both rows and
+offers the download while you still have a connection. With the pack installed
+the audio never leaves the device and the microphone works with no network.
+
+Where the pack is not available, the app says so rather than pretending: the mic
+button disables itself, and the hint points at the text box, which never needed a
+network. The lamp, the strobe, the torch, the sidetone, the camera receiver and
+typed text are all offline from the start.
+
+Icons are drawn by `tools/make_icons.py` rather than kept as hand-maintained
+binaries.
+
 ## Browsers
 
 Speech recognition needs Chrome, Edge or Safari; Firefox has none, so the mic
@@ -98,6 +139,9 @@ or resume · <kbd>Esc</kbd> stop or leave the strobe.
 | `i18n.js` | EN · ES · PT-BR · JA · RU strings (English source strings are the keys) |
 | `carino-navbar.js`, `carino-clock.js`, `carino-lang.js` | the shared fleet header |
 | `fonts/` | self-hosted IBM Plex Mono/Sans + Red Hat Display |
+| `sw.js`, `manifest.webmanifest` | the offline cache and the installable app |
+| `tools/build_sw.py` | regenerates the precache list and `VERSION`; `--check` gates it |
+| `tools/make_icons.py` | draws the launcher icons |
 
 `window.Aldis` exposes the tables, `encode`, `timing` and the decoder step for
 poking at from the console.
