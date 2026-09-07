@@ -36,6 +36,11 @@ const I18N = {
         'Listening…': 'Escuchando…',
         'Microphone on': 'Micrófono activado',
         'Speech error': 'Error de voz',
+        // controls that appear in more than one place
+        'Microphone': 'Micrófono',
+        'Fullscreen strobe': 'Destello a pantalla completa',
+        'Setup': 'Ajustes',
+        'Mic': 'Mic',
         // offline readiness
         'Prepare for offline': 'Prepara el modo sin conexión',
         'Checking the cache…': 'Comprobando la caché…',
@@ -161,6 +166,11 @@ const I18N = {
         'Listening…': 'Ouvindo…',
         'Microphone on': 'Microfone ligado',
         'Speech error': 'Erro de fala',
+        // controls that appear in more than one place
+        'Microphone': 'Microfone',
+        'Fullscreen strobe': 'Flash em tela cheia',
+        'Setup': 'Ajustes',
+        'Mic': 'Mic',
         // offline readiness
         'Prepare for offline': 'Prepare para ficar sem conexão',
         'Checking the cache…': 'Verificando o cache…',
@@ -283,6 +293,11 @@ const I18N = {
         'Listening…': '聞いています…',
         'Microphone on': 'マイク オン',
         'Speech error': '音声エラー',
+        // controls that appear in more than one place
+        'Microphone': 'マイク',
+        'Fullscreen strobe': '全画面点滅',
+        'Setup': '設定',
+        'Mic': 'マイク',
         // offline readiness
         'Prepare for offline': 'オフラインの準備',
         'Checking the cache…': 'キャッシュを確認中…',
@@ -405,6 +420,11 @@ const I18N = {
         'Listening…': 'Слушаю…',
         'Microphone on': 'Микрофон включён',
         'Speech error': 'Ошибка распознавания',
+        // controls that appear in more than one place
+        'Microphone': 'Микрофон',
+        'Fullscreen strobe': 'Вспышка во весь экран',
+        'Setup': 'Настройки',
+        'Mic': 'Микр.',
         // offline readiness
         'Prepare for offline': 'Подготовка к работе без сети',
         'Checking the cache…': 'Проверка кеша…',
@@ -522,6 +542,13 @@ function applyStaticI18n() {
 }
 
 function applyAttrI18n() {
+    // Icon-only controls carry their label in title/aria-label, and the three
+    // in the navbar are icon-only by the time carino-navbar.js has moved them.
+    document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+        const label = t(el.dataset.i18nTitle);
+        el.title = label;
+        el.setAttribute('aria-label', label);
+    });
     const ta = document.getElementById('txText');
     if (ta) ta.placeholder = t('HELLO FROM THE BRIDGE');
     const stage = document.getElementById('camStage');

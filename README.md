@@ -40,6 +40,29 @@ the thing.
   to katakana, small kana are sent full size, and voiced kana split into the kana
   plus its `゛` mark, which the decoder folds back in.
 
+## On a phone
+
+A signalling lamp is a thing you hold up one-handed outdoors, so the phone
+layout is not the desktop one reflowed. Stacking the three panels came to
+3290px of scroll — the microphone was below the fold and the settings four
+screens down. Under 760px it becomes:
+
+- **one panel at a time**, behind sticky Send / Receive / Setup tabs, which
+  brings each one to 1465–1680px and puts the mic button on the first screen;
+- **a thumb bar** pinned to the bottom with Mic, Strobe and Stop, sized for a
+  thumb rather than a cursor, and clear of the home indicator;
+- **a compact stage** — the lamp stays visible at 104px beside the readout
+  instead of owning the screen.
+
+The same three actions live in the **shared fleet navbar** on wider screens:
+`[data-carino-actions]` is what `carino-navbar.js` relocates into `.cn-right`,
+and they hide on phones where the thumb bar has them. Every copy of an action
+is dispatched by `data-act` and repainted by `syncActs()`, so pressing Strobe
+in the navbar lights the one in the thumb bar too. Note that the navbar's own
+injected `#carinoNav .cn-actions { display: flex }` outranks any class-only
+rule and lands later in the cascade, so hiding a relocated control needs the id
+and `!important`.
+
 ## Timing
 
 PARIS timing: one unit is `1200 / WPM` ms, a dash is three units, the gap inside
