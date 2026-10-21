@@ -2,6 +2,8 @@
 
 Speak, and a signal lamp says it in Morse → **[aldis.carino.systems](https://aldis.carino.systems)**
 
+![Aldis Lamp](screenshot.webp)
+
 An Aldis lamp is a handheld signalling lamp with a trigger-operated shutter, used
 at sea to talk between ships without a radio. This page puts one behind your
 voice: speech is transcribed by the browser, spelled out in Morse, and flashed at
