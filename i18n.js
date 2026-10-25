@@ -136,6 +136,12 @@ const I18N = {
         'pause or resume': 'pausar o reanudar',
         'stop': 'detener',
         'Tap or press Esc to leave': 'Toca o pulsa Esc para salir',
+        "Runs in your browser. Nothing you add here is uploaded.": "Funciona en tu navegador. Nada de lo que añades aquí se sube.",
+        "Speak or type, and the lamp flashes it in Morse. Point the camera at a lamp to read one back.": "Habla o escribe y la lámpara lo destella en Morse. Apunta la cámara a una lámpara para leerla.",
+        "The lamp, the keyer and the decoder run in this page, and the camera image never leaves it. Speech goes to the browser's own recogniser: in Chrome that runs on Google's servers unless the on-device speech pack is installed (Setup › Prepare for offline).": "La lámpara, el manipulador y el decodificador funcionan en esta página, y la imagen de la cámara nunca sale de ella. La voz va al reconocedor del propio navegador: en Chrome funciona en los servidores de Google salvo que esté instalado el paquete de voz para el dispositivo (Ajustes › Prepara el modo sin conexión).",
+        "Speech pack not checked yet": "Paquete de voz aún sin comprobar",
+        "Check": "Comprobar",
+        "In Chrome, speech is recognised by Google’s servers unless the on-device pack is installed.": "En Chrome, los servidores de Google reconocen la voz salvo que esté instalado el paquete para el dispositivo.",
     },
 
     'pt-BR': {
@@ -263,6 +269,12 @@ const I18N = {
         'pause or resume': 'pausar ou retomar',
         'stop': 'parar',
         'Tap or press Esc to leave': 'Toque ou pressione Esc para sair',
+        "Runs in your browser. Nothing you add here is uploaded.": "Roda no seu navegador. Nada do que você adiciona aqui é enviado.",
+        "Speak or type, and the lamp flashes it in Morse. Point the camera at a lamp to read one back.": "Fale ou digite, e a lanterna pisca em Morse. Aponte a câmera para uma lanterna para ler de volta.",
+        "The lamp, the keyer and the decoder run in this page, and the camera image never leaves it. Speech goes to the browser's own recogniser: in Chrome that runs on Google's servers unless the on-device speech pack is installed (Setup › Prepare for offline).": "A lanterna, o manipulador e o decodificador rodam nesta página, e a imagem da câmera nunca sai dela. A fala vai para o reconhecedor do próprio navegador: no Chrome ele roda nos servidores do Google, a menos que o pacote de fala no dispositivo esteja instalado (Ajustes › Prepare para ficar sem conexão).",
+        "Speech pack not checked yet": "Pacote de fala ainda não verificado",
+        "Check": "Verificar",
+        "In Chrome, speech is recognised by Google’s servers unless the on-device pack is installed.": "No Chrome, a fala é reconhecida pelos servidores do Google, a menos que o pacote no dispositivo esteja instalado.",
     },
 
     ja: {
@@ -390,6 +402,12 @@ const I18N = {
         'pause or resume': '一時停止・再開',
         'stop': '停止',
         'Tap or press Esc to leave': 'タップまたは Esc で戻る',
+        "Runs in your browser. Nothing you add here is uploaded.": "ブラウザ内で動作します。ここに追加したものはアップロードされません。",
+        "Speak or type, and the lamp flashes it in Morse. Point the camera at a lamp to read one back.": "話すか入力すると、ランプがモールス信号で点滅します。カメラをランプに向ければ読み取れます。",
+        "The lamp, the keyer and the decoder run in this page, and the camera image never leaves it. Speech goes to the browser's own recogniser: in Chrome that runs on Google's servers unless the on-device speech pack is installed (Setup › Prepare for offline).": "ランプ、キーヤー、デコーダーはこのページ内で動作し、カメラ映像がページの外に出ることはありません。音声はブラウザー自身の認識エンジンに渡されます。Chrome では、端末内の音声パック（設定 › オフラインの準備）をインストールしていない限り、Google のサーバーで認識されます。",
+        "Speech pack not checked yet": "音声パックはまだ確認していません",
+        "Check": "確認",
+        "In Chrome, speech is recognised by Google’s servers unless the on-device pack is installed.": "Chrome では、端末内の音声パックをインストールしていない限り、音声は Google のサーバーで認識されます。",
     },
 
     ru: {
@@ -517,6 +535,12 @@ const I18N = {
         'pause or resume': 'пауза или продолжение',
         'stop': 'стоп',
         'Tap or press Esc to leave': 'Нажмите или Esc, чтобы выйти',
+        "Runs in your browser. Nothing you add here is uploaded.": "Работает в вашем браузере. Ничего из добавленного сюда не загружается.",
+        "Speak or type, and the lamp flashes it in Morse. Point the camera at a lamp to read one back.": "Говорите или печатайте, и фонарь передаст это азбукой Морзе. Наведите камеру на фонарь, чтобы прочитать сигнал.",
+        "The lamp, the keyer and the decoder run in this page, and the camera image never leaves it. Speech goes to the browser's own recogniser: in Chrome that runs on Google's servers unless the on-device speech pack is installed (Setup › Prepare for offline).": "Фонарь, ключ и декодер работают на этой странице, и изображение с камеры её не покидает. Речь обрабатывает распознаватель самого браузера: в Chrome он работает на серверах Google, если не установлен пакет для распознавания на устройстве (Настройки › Подготовка к работе без сети).",
+        "Speech pack not checked yet": "Пакет речи ещё не проверен",
+        "Check": "Проверить",
+        "In Chrome, speech is recognised by Google’s servers unless the on-device pack is installed.": "В Chrome речь распознаётся на серверах Google, если не установлен пакет для распознавания на устройстве.",
     },
 };
 

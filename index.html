@@ -32,18 +32,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="fonts/carino-fonts.css">
+<link rel="stylesheet" href="carino-ui.css">
 <style>
-:root{
-  --accent:#eab308; --bg:#050505; --bg-elev:#0d0d0d; --bg-card:#0b0b0b;
-  --accent-faint:rgba(234,179,8,.05); --accent-glow:rgba(234,179,8,.15); --accent-dim:rgba(234,179,8,.30);
-  --border:#262626; --text:#fff; --text-sec:#a3a3a3; --text-muted:#8a8a8a;
-  --border-hv:#eab308; --ok:#22c55e; --warn:#eab308; --err:#ef4444; --info:#38bdf8;
-  --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
-  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --display:'Red Hat Display',var(--sans);
-  --radius:10px;
-}
-*{box-sizing:border-box}
+/* Tokens, .btn, .check, .kbd and the short hero come from carino-ui.css. */
 /* .btn and .field set display on a class, which outranks the UA's own
    [hidden]{display:none} — without this, every hidden control renders as an
    empty pill. */
@@ -53,12 +44,15 @@ h1,h2,h3{font-family:var(--display);margin:0}
 button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* ---------- shell ---------- */
-.app{max-width:1500px;margin:0 auto;padding:18px 18px 60px;display:flex;flex-direction:column;gap:18px}
+/* ---------- shell ----------
+   One column (.col): the lamp has three settings that matter, so no rail.
+   It is wider than .col's default so the three panels sit side by side. */
+.app.col{width:min(1500px,100%);padding:18px 18px 60px;gap:18px}
+.app>.short-hero.rail-head{padding-bottom:0;border-bottom:0}
 
 /* ---------- the three global actions ----------
    One set of buttons, relocated into the shared navbar by carino-navbar.js
-   (it moves [data-carino-actions] into .cn-right and adds .cn-actions). On a
+   (it moves the marked actions node into .cn-right and adds .cn-actions). On a
    phone the navbar is the wrong end of the screen for a thumb, so these hide
    and .thumbbar takes over. Styled with #carinoNav in the selector because the
    navbar's own injected `#carinoNav .icon-btn` outranks anything class-only —
@@ -81,7 +75,7 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 }
 
 /* ---------- tabs (small screens only) ---------- */
-.tabbar{display:none;gap:6px;grid-template-columns:repeat(3,1fr)}
+.tabbar{display:none;gap:6px;grid-template-columns:repeat(3,1fr);border-bottom:0}
 .tab{
   background:var(--bg-card);border:1px solid var(--border);border-radius:8px;color:var(--text-sec);
   padding:11px 8px;font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.16s;
@@ -176,9 +170,9 @@ body.lamp-mute .shutter-blade.top,body.lamp-mute .shutter-blade.bottom{transform
   display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);background:#0d0d0d;
 }
 .panel-head h2{font-size:.78rem;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-sec);font-weight:500}
-.panel-head .dot{width:7px;height:7px;border-radius:50%;background:#333;flex-shrink:0}
-.panel-head .dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
-.panel-head .dot.rec{background:var(--err);box-shadow:0 0 8px var(--err);animation:pulse 1.1s ease-in-out infinite}
+.led{width:7px;height:7px;border-radius:50%;background:#333;flex-shrink:0}
+.panel-head .led.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.panel-head .led.rec{background:var(--err);box-shadow:0 0 8px var(--err);animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.25}}
 .panel-head .spacer{margin-left:auto}
 .panel-body{padding:14px;display:flex;flex-direction:column;gap:12px}
@@ -189,21 +183,14 @@ label.field{display:flex;flex-direction:column;gap:5px;flex:1 1 130px;min-width:
 /* .field is sized for a row; in the column panel body that basis would be read
    as a height and stretch every control apart */
 .panel-body>label.field{flex:0 0 auto}
-label.field>span{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+label.field>span{font-family:var(--mono);font-size:var(--fs-label);letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 .hint{font-size:.78rem;color:var(--text-muted);line-height:1.5}
 .hint code{font-family:var(--mono);color:var(--text-sec);background:var(--bg-elev);border:1px solid var(--border);border-radius:3px;padding:0 4px}
 
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;color:var(--text-sec);
-  padding:8px 12px;font-size:.84rem;cursor:pointer;transition:.16s;white-space:nowrap;
-}
-.btn:hover:not(:disabled){border-color:var(--border-hv);color:var(--accent);background:var(--accent-faint)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn.primary{border-color:var(--accent-dim);color:var(--accent)}
+.btn{justify-content:center;white-space:nowrap}
 .btn[aria-pressed="true"]{background:rgba(234,179,8,.14);border-color:var(--accent);color:var(--accent)}
 .btn.danger:hover:not(:disabled){border-color:var(--err);color:var(--err);background:rgba(239,68,68,.08)}
-.btn.mono{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em}
+.btn.small{height:30px;padding:0 10px}
 
 .mic-btn{
   width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;
@@ -222,10 +209,8 @@ input[type=text],input[type=number],select,textarea{
 input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--border-hv);outline:none}
 textarea{font-family:var(--mono);font-size:.88rem;resize:vertical;min-height:76px}
 input[type=range]{width:100%;accent-color:var(--accent);background:transparent}
-.switch{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:.86rem;color:var(--text-sec);padding:2px 0}
-.switch input{accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;cursor:pointer}
-.switch.off{color:var(--text-muted)}
-.switch small{color:var(--text-muted);font-size:.72rem}
+.panel-body .check{display:flex;padding:3px 0;text-transform:none;font-size:var(--fs-sm)}
+.check small{color:var(--text-muted);font-size:var(--fs-label)}
 
 .prosigns{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px}
 .prosign{
@@ -260,13 +245,12 @@ input[type=range]{width:100%;accent-color:var(--accent);background:transparent}
 /* ---------- offline readiness ---------- */
 .ready{display:flex;flex-direction:column;gap:7px;margin-bottom:9px}
 .ready-row{display:flex;align-items:center;gap:9px;font-size:.84rem;color:var(--text-sec)}
-.ready-row .dot{width:7px;height:7px;border-radius:50%;background:#333;flex-shrink:0}
-.ready-row .dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
-.ready-row .dot.busy{background:var(--info);animation:pulse 1.1s ease-in-out infinite}
-.ready-row .dot.warn{background:var(--warn)}
-.ready-row .dot.err{background:var(--err)}
+.ready-row .led.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.ready-row .led.busy{background:var(--info);animation:pulse 1.1s ease-in-out infinite}
+.ready-row .led.warn{background:var(--warn)}
+.ready-row .led.err{background:var(--err)}
 .ready-row .ready-text{flex:1 1 auto;min-width:0}
-.ready-row .btn{padding:4px 9px;font-size:.74rem;flex-shrink:0}
+.ready-row .btn{flex-shrink:0}
 .offline-badge{
   display:none;align-items:center;gap:7px;margin-bottom:2px;padding:7px 10px;border-radius:6px;
   background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.35);color:var(--err);font-size:.8rem;
@@ -305,8 +289,7 @@ body.key-on .strobe .exit{opacity:0}
 .about h2{font-size:1rem;margin-bottom:8px}
 .about p{color:var(--text-sec);font-size:.88rem;margin:0 0 8px}
 .about p:last-child{margin-bottom:0}
-.about kbd{font-family:var(--mono);font-size:.75rem;background:var(--bg-elev);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--text)}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.about .kbd-legend{margin-top:10px}
 
 /* ---------- phones ----------
    The three panels stacked came to 3290px of scroll: the microphone sat below
@@ -357,19 +340,24 @@ body.key-on .strobe .exit{opacity:0}
   .about{padding:14px}
   /* a 16px font is what stops iOS zooming the whole page on focus */
   textarea,input[type=text],input[type=number],select{font-size:16px}
-  .btn{padding:10px 13px}
+  .btn{padding:0 13px}
   input[type=range]{height:26px}
 }
 </style>
 </head>
 <body>
 <div class="app-actions" data-carino-actions>
-  <button class="icon-btn" data-act="mic" aria-pressed="false" aria-label="Microphone" title="Microphone" data-i18n-title="Microphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg></button>
+  <button class="icon-btn" data-act="mic" data-priority="1" aria-pressed="false" aria-label="Microphone" title="Microphone" data-i18n-title="Microphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg></button>
   <button class="icon-btn" data-act="strobe" aria-pressed="false" aria-label="Fullscreen strobe" title="Fullscreen strobe" data-i18n-title="Fullscreen strobe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8V3h5"/><path d="M21 8V3h-5"/><path d="M3 16v5h5"/><path d="M21 16v5h-5"/><circle cx="12" cy="12" r="3"/></svg></button>
   <button class="icon-btn" data-act="stop" aria-label="Stop" title="Stop" data-i18n-title="Stop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
 </div>
 
-<main class="app">
+<main class="app col">
+
+  <div class="short-hero rail-head">
+    <img class="mark" src="logo.svg" alt="" width="32" height="32">
+    <div><h1>Aldis Lamp</h1><p class="sh-lede" data-i18n>Speak or type, and the lamp flashes it in Morse. Point the camera at a lamp to read one back.</p></div>
+  </div>
 
   <!-- ===================== STAGE ===================== -->
   <section class="stage" aria-label="Signal lamp">
@@ -448,7 +436,7 @@ body.key-on .strobe .exit{opacity:0}
     <!-- ===================== TRANSMIT ===================== -->
     <section class="panel" data-panel="tx">
       <div class="panel-head">
-        <span class="dot" id="micDot"></span>
+        <span class="led" id="micDot"></span>
         <h2 data-i18n>Transmit</h2>
         <span class="spacer"></span>
         <span class="chip" id="chipLang"></span>
@@ -470,10 +458,10 @@ body.key-on .strobe .exit{opacity:0}
           <textarea id="txText" placeholder="HELLO FROM THE BRIDGE"></textarea>
         </label>
         <div class="row">
-          <button class="btn primary" id="sendBtn" data-act="send" data-i18n>Send</button>
+          <button class="btn btn-primary" id="sendBtn" data-act="send" data-i18n>Send</button>
           <button class="btn" id="pauseBtn" data-act="pause" data-i18n>Pause</button>
           <button class="btn danger" id="stopBtn" data-act="stop" data-i18n>Stop</button>
-          <button class="btn mono" id="strobeBtn" data-act="strobe" title="Fullscreen white flash">⛶ <span data-i18n>Strobe</span></button>
+          <button class="btn" id="strobeBtn" data-act="strobe" title="Fullscreen white flash">⛶ <span data-i18n>Strobe</span></button>
         </div>
 
         <div>
@@ -486,7 +474,7 @@ body.key-on .strobe .exit{opacity:0}
     <!-- ===================== RECEIVE ===================== -->
     <section class="panel" data-panel="rx">
       <div class="panel-head">
-        <span class="dot" id="camDot"></span>
+        <span class="led" id="camDot"></span>
         <h2 data-i18n>Receive</h2>
         <span class="spacer"></span>
         <span class="chip" id="chipRx"></span>
@@ -497,7 +485,7 @@ body.key-on .strobe .exit{opacity:0}
           <div class="roi" id="roi" hidden></div>
         </div>
         <div class="row">
-          <button class="btn primary" id="camBtn" data-act="camera" data-i18n>Start camera</button>
+          <button class="btn btn-primary" id="camBtn" data-act="camera" data-i18n>Start camera</button>
           <select id="camPick" style="flex:1 1 130px;width:auto" aria-label="Camera"></select>
         </div>
         <canvas class="scope" id="scope" width="600" height="64"></canvas>
@@ -514,7 +502,7 @@ body.key-on .strobe .exit{opacity:0}
         <div class="row">
           <button class="btn" id="rxCopy" data-i18n>Copy</button>
           <button class="btn" id="rxClear" data-i18n>Clear</button>
-          <label class="switch" style="margin-left:auto"><input type="checkbox" id="rxAuto" checked><span data-i18n>Auto speed</span></label>
+          <label class="check" style="margin-left:auto"><input type="checkbox" id="rxAuto" checked><span data-i18n>Auto speed</span></label>
         </div>
         <p class="hint" data-i18n>Works on a real lamp, a phone torch, or this page's own strobe held up to the camera.</p>
       </div>
@@ -523,7 +511,7 @@ body.key-on .strobe .exit{opacity:0}
     <!-- ===================== SETTINGS ===================== -->
     <section class="panel" data-panel="set">
       <div class="panel-head">
-        <span class="dot"></span>
+        <span class="led"></span>
         <h2 data-i18n>Lamp &amp; output</h2>
       </div>
       <div class="panel-body">
@@ -560,9 +548,9 @@ body.key-on .strobe .exit{opacity:0}
 
         <div>
           <div class="hint" style="margin-bottom:4px" data-i18n>Outputs</div>
-          <label class="switch"><input type="checkbox" id="outScreen" checked><span data-i18n>On-screen lamp</span></label>
-          <label class="switch"><input type="checkbox" id="outTone"><span data-i18n>Sidetone</span> <small id="toneHz">600 Hz</small></label>
-          <label class="switch" id="torchRow"><input type="checkbox" id="outTorch"><span data-i18n>Device torch</span> <small id="torchNote"></small></label>
+          <label class="check"><input type="checkbox" id="outScreen" checked><span data-i18n>On-screen lamp</span></label>
+          <label class="check"><input type="checkbox" id="outTone"><span data-i18n>Sidetone</span> <small id="toneHz">600 Hz</small></label>
+          <label class="check" id="torchRow"><input type="checkbox" id="outTorch"><span data-i18n>Device torch</span> <small id="torchNote"></small></label>
         </div>
         <label class="field" id="toneRow" hidden>
           <span data-i18n>Sidetone pitch</span>
@@ -573,24 +561,24 @@ body.key-on .strobe .exit{opacity:0}
           <div class="hint" style="margin-bottom:7px" data-i18n>Prepare for offline</div>
           <div class="ready">
             <div class="ready-row">
-              <span class="dot" id="swDot"></span>
+              <span class="led" id="swDot"></span>
               <span class="ready-text" id="swText"></span>
-              <button class="btn mono" id="swBtn" hidden></button>
+              <button class="btn small" id="swBtn" hidden></button>
             </div>
             <div class="ready-row">
-              <span class="dot" id="packDot"></span>
+              <span class="led" id="packDot"></span>
               <span class="ready-text" id="packText"></span>
-              <button class="btn mono" id="packBtn" hidden></button>
+              <button class="btn small" id="packBtn" hidden></button>
             </div>
           </div>
-          <label class="switch"><input type="checkbox" id="onDevice" checked><span data-i18n>Recognise speech on-device when possible</span></label>
+          <label class="check"><input type="checkbox" id="onDevice" checked><span data-i18n>Recognise speech on-device when possible</span></label>
           <p class="hint" data-i18n>Do both of these while you still have a connection. After that the lamp, the decoder and — with the pack installed — the microphone all work with the radio off.</p>
         </div>
 
         <div>
           <div class="row" style="margin-bottom:6px">
             <div class="hint" style="margin:0" data-i18n>Log</div>
-            <button class="btn mono" id="logClear" style="margin-left:auto;padding:3px 8px" data-i18n>Clear</button>
+            <button class="btn small" id="logClear" style="margin-left:auto" data-i18n>Clear</button>
           </div>
           <div class="log" id="log"><div class="none" data-i18n>No traffic yet.</div></div>
         </div>
@@ -601,10 +589,17 @@ body.key-on .strobe .exit{opacity:0}
   <section class="about">
     <h2 data-i18n>About the lamp</h2>
     <p data-i18n>An Aldis lamp is a handheld signalling lamp with a trigger-operated shutter, used at sea to talk between ships without a radio. This page puts one behind your voice: what you say is transcribed, spelled out in Morse, and flashed at a signalling speed you can actually read.</p>
-    <p data-i18n>Everything runs in your browser. Audio is transcribed by the browser's own speech engine, the camera image never leaves the page, and nothing is uploaded or stored.</p>
+    <p data-i18n>The lamp, the keyer and the decoder run in this page, and the camera image never leaves it. Speech goes to the browser's own recogniser: in Chrome that runs on Google's servers unless the on-device speech pack is installed (Setup › Prepare for offline).</p>
     <p data-i18n>Add it to your home screen and it keeps working with no connection at all — the light, the decoder, and the microphone too once a speech pack is downloaded.</p>
-    <p><kbd>M</kbd> <span data-i18n>microphone</span> · <kbd>F</kbd> <span data-i18n>fullscreen strobe</span> · <kbd>Space</kbd> <span data-i18n>pause or resume</span> · <kbd>Esc</kbd> <span data-i18n>stop</span></p>
+    <div class="kbd-legend">
+      <span><span class="kbd accent">M</span> <span class="lbl" data-i18n>microphone</span></span>
+      <span><span class="kbd">F</span> <span class="lbl" data-i18n>fullscreen strobe</span></span>
+      <span><span class="kbd">Space</span> <span class="lbl" data-i18n>pause or resume</span></span>
+      <span><span class="kbd">Esc</span> <span class="lbl" data-i18n>stop</span></span>
+    </div>
   </section>
+
+  <p class="privacy-line"><span><span data-i18n>Runs in your browser. Nothing you add here is uploaded.</span> <span class="pl-also" data-i18n>In Chrome, speech is recognised by Google’s servers unless the on-device pack is installed.</span></span></p>
 </main>
 
 <div class="thumbbar" id="thumbbar">
@@ -1076,9 +1071,15 @@ function srLang() {
    pack something you can fetch deliberately before you leave.
    ------------------------------------------------------------ */
 const speech = {
-  // 'unsupported' | 'available' | 'downloadable' | 'downloading' | 'unavailable' | 'checking'
-  onDevice: 'checking',
+  // 'unasked' | 'unsupported' | 'available' | 'downloadable' | 'downloading' | 'unavailable' | 'checking'
+  // 'unasked' until the visitor first needs the answer: available() talks to
+  // the browser's speech service, and asking at load (no gesture) has been
+  // seen to kill the renderer in Chromium builds that ship without it.
+  onDevice: 'unasked',
   installing: false,
+  asked: false,
+  pending: null,     // the in-flight available() call, and the language it is for
+  pendingLang: '',
 };
 
 // available() and install() must be asked about exactly the same thing, or a
@@ -1087,12 +1088,29 @@ function srOptions() { return { langs: [srLang()], processLocally: true }; }
 
 function hasOnDeviceApi() { return !!(SR && typeof SR.available === 'function'); }
 
+// Asks for real, once per language at a time: a second call while one is in
+// flight for the same language gets the same promise.
 function refreshOnDevice() {
+  speech.asked = true;
   if (!hasOnDeviceApi()) { speech.onDevice = 'unsupported'; renderReady(); return Promise.resolve(); }
-  return SR.available(srOptions())
+  const lang = srLang();
+  if (speech.pending && speech.pendingLang === lang) return speech.pending;
+  speech.pendingLang = lang;
+  const p = SR.available(srOptions())
     .then((status) => { speech.onDevice = String(status); })
     .catch(() => { speech.onDevice = 'unsupported'; })
-    .then(renderReady);
+    .then(() => { if (speech.pending === p) speech.pending = null; renderReady(); });
+  speech.pending = p;
+  return p;
+}
+
+// The load-time and background callers (language change, coming back
+// online): they re-check only once the visitor has asked for speech.
+function recheckOnDevice() {
+  if (!speech.asked) return Promise.resolve();
+  speech.onDevice = 'checking';
+  renderReady();
+  return refreshOnDevice();
 }
 
 function installPack() {
@@ -1109,7 +1127,8 @@ function installPack() {
 // Speech can run with the radio off only when the pack is installed AND the
 // user has not opted out of using it.
 function speechIsLocal() { return state.onDevice && speech.onDevice === 'available'; }
-function speechUsable() { return !!SR && (navigator.onLine || speechIsLocal()); }
+// Not asked yet counts as usable: the first press of the mic asks, then decides.
+function speechUsable() { return !!SR && (navigator.onLine || speechIsLocal() || speech.onDevice === 'unasked'); }
 
 function setStatus(el, key, suffix) {
   el.dataset.i18nKey = key;
@@ -1123,21 +1142,21 @@ function renderReady() {
   const dot = $('swDot'), text = $('swText'), btn = $('swBtn');
   btn.hidden = true;
   if (!('serviceWorker' in navigator) || location.protocol.indexOf('http') !== 0) {
-    dot.className = 'dot warn';
+    dot.className = 'led warn';
     setStatus(text, 'Open over http(s) to cache the app');
   } else if (swUpdate) {
-    dot.className = 'dot busy';
+    dot.className = 'led busy';
     setStatus(text, 'A new version is ready');
     btn.hidden = false;
     setLabel(btn, 'Update');
   } else if (!swStatus) {
-    dot.className = 'dot';
+    dot.className = 'led';
     setStatus(text, 'Checking the cache…');
   } else if (swStatus.ready) {
-    dot.className = 'dot on';
+    dot.className = 'led on';
     setStatus(text, 'App cached — opens with no connection');
   } else {
-    dot.className = 'dot busy';
+    dot.className = 'led busy';
     setStatus(text, 'Caching the app…', ' ' + swStatus.present + '/' + swStatus.required);
   }
 
@@ -1145,27 +1164,32 @@ function renderReady() {
   const pdot = $('packDot'), ptext = $('packText'), pbtn = $('packBtn');
   pbtn.hidden = true;
   if (!SR) {
-    pdot.className = 'dot err';
+    pdot.className = 'led err';
     setStatus(ptext, 'This browser has no speech recognition');
   } else if (speech.installing || speech.onDevice === 'downloading') {
-    pdot.className = 'dot busy';
+    pdot.className = 'led busy';
     setStatus(ptext, 'Downloading the speech pack…');
   } else if (speech.onDevice === 'available') {
-    pdot.className = 'dot on';
+    pdot.className = 'led on';
     setStatus(ptext, 'Speech pack installed', ' · ' + srLang());
   } else if (speech.onDevice === 'downloadable') {
-    pdot.className = 'dot warn';
+    pdot.className = 'led warn';
     setStatus(ptext, 'Speech pack not downloaded', ' · ' + srLang());
     pbtn.hidden = false;
     setLabel(pbtn, 'Download');
+  } else if (speech.onDevice === 'unasked') {
+    pdot.className = 'led';
+    setStatus(ptext, 'Speech pack not checked yet', ' · ' + srLang());
+    pbtn.hidden = false;
+    setLabel(pbtn, 'Check');
   } else if (speech.onDevice === 'checking') {
-    pdot.className = 'dot';
+    pdot.className = 'led';
     setStatus(ptext, 'Checking the speech pack…');
   } else if (speech.onDevice === 'unavailable') {
-    pdot.className = 'dot err';
+    pdot.className = 'led err';
     setStatus(ptext, 'No on-device speech for this language', ' · ' + srLang());
   } else {
-    pdot.className = 'dot err';
+    pdot.className = 'led err';
     setStatus(ptext, 'This browser sends speech to a server');
   }
 
@@ -1193,6 +1217,8 @@ function setLive(html, cls) {
 
 function startMic() {
   if (!SR || listening) return;
+  // First use: find out whether the pack is here before choosing local or server.
+  if (speech.onDevice === 'unasked' && hasOnDeviceApi()) { refreshOnDevice().then(startMic); return; }
   if (!speechUsable()) {
     log('err', tr('Offline, and no on-device pack for this language — type into the box below and the lamp sends it exactly the same.'));
     renderReady();
@@ -1229,7 +1255,7 @@ function startMic() {
     if (ev.error === 'network') {
       stopMic();
       log('sys', tr('Offline, and no on-device pack for this language — type into the box below and the lamp sends it exactly the same.'));
-      refreshOnDevice();
+      recheckOnDevice();
       return;
     }
     if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') stopMic();
@@ -1252,7 +1278,7 @@ function startMic() {
   listening = true;
   interimText = '';
   $('micBtn').classList.add('on');
-  $('micDot').className = 'dot rec';
+  $('micDot').className = 'led rec';
   setLabel($('micLabel'), 'Stop listening');
   setLive(tr('Listening…'), 'readout-empty');
   syncActs();
@@ -1264,7 +1290,7 @@ function stopMic() {
   if (recog) { recog.onend = null; try { recog.stop(); } catch (e) {} recog = null; }
   interimText = '';
   $('micBtn').classList.remove('on');
-  $('micDot').className = 'dot';
+  $('micDot').className = 'led';
   setLabel($('micLabel'), 'Start listening');
   setLive('');
   renderQueue();
@@ -1317,7 +1343,7 @@ async function startCam() {
   rxReset();
   $('camStage').classList.remove('idle');
   $('roi').hidden = false;
-  $('camDot').className = 'dot on';
+  $('camDot').className = 'led on';
   setLabel($('camBtn'), 'Stop camera');
   listCams();
   log('sys', tr('Camera on'));
@@ -1331,7 +1357,7 @@ function stopCam() {
   $('cam').srcObject = null;
   $('camStage').classList.add('idle');
   $('roi').hidden = true;
-  $('camDot').className = 'dot';
+  $('camDot').className = 'led';
   setLabel($('camBtn'), 'Start camera');
   setChip('chipRx', '');
   $('contrastBar').style.width = '0%';
@@ -1713,7 +1739,11 @@ function wire() {
     const button = e.target.closest('[data-act]');
     if (button) { if (!button.disabled) act(button.dataset.act); return; }
     const tab = e.target.closest('.tab');
-    if (tab) setTab(tab.dataset.tab);
+    if (tab) {
+      setTab(tab.dataset.tab);
+      // Opening Setup is asking about the speech pack.
+      if (tab.dataset.tab === 'set' && !speech.asked) refreshOnDevice();
+    }
   });
   $('txText').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); act('send'); }
@@ -1738,18 +1768,16 @@ function wire() {
   $('srLang').addEventListener('change', (e) => {
     state.srLang = e.target.value; saveState();
     if (listening) { stopMic(); startMic(); }
-    speech.onDevice = 'checking';
-    renderReady();
-    refreshOnDevice();
+    recheckOnDevice();
   });
   $('onDevice').addEventListener('change', (e) => {
     state.onDevice = e.target.checked; saveState();
     if (listening) { stopMic(); startMic(); }
     renderReady();
   });
-  $('packBtn').addEventListener('click', installPack);
+  $('packBtn').addEventListener('click', () => (speech.onDevice === 'unasked' ? refreshOnDevice() : installPack()));
   $('swBtn').addEventListener('click', applyUpdate);
-  window.addEventListener('online', () => { renderReady(); refreshOnDevice(); });
+  window.addEventListener('online', () => { renderReady(); recheckOnDevice(); });
   window.addEventListener('offline', renderReady);
 
   $('outScreen').addEventListener('change', (e) => {
@@ -1821,7 +1849,7 @@ function repaint() {
   if (!logRows.length) $('log').innerHTML = '<div class="none">' + esc(tr('No traffic yet.')) + '</div>';
   renderQueue(); renderCode(); renderRx(); renderReady();
   // 'Auto' follows the fleet language, so the pack that matters just changed.
-  if (state.srLang === 'auto') refreshOnDevice();
+  if (state.srLang === 'auto') recheckOnDevice();
 }
 
 function init() {
@@ -1848,7 +1876,9 @@ function init() {
   setTab(['tx', 'rx', 'set'].indexOf(tab) >= 0 ? tab : 'tx');
   renderQueue(); renderCode(); renderRx(); renderReady(); syncActs();
   initSW();
-  refreshOnDevice();
+  if (!hasOnDeviceApi()) speech.onDevice = 'unsupported';   // nothing to ask, so no call
+  // No refreshOnDevice() here: it waits for the first mic press, the Setup
+  // tab or the pack row's Check button (see speech.onDevice above).
   // The manifest shortcut lands here. Fullscreen will be refused without a
   // gesture and that is fine — an installed app has no browser chrome for the
   // overlay to leave showing anyway.
