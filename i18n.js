@@ -13,6 +13,9 @@ const I18N = {
         'Good evening.': 'Buenas noches.',
         // stage
         'Signal lamp': 'Lámpara de señales',
+        'Sections': 'Secciones',
+        'Fullscreen white flash': 'Destello blanco a pantalla completa',
+        'More': 'Más',
         'Nothing queued. Talk, type, or tap a procedure signal.': 'Nada en cola. Habla, escribe o pulsa una señal de procedimiento.',
         'Idle': 'En espera',
         'Sending': 'Enviando',
@@ -150,6 +153,9 @@ const I18N = {
         'Good afternoon.': 'Boa tarde.',
         'Good evening.': 'Boa noite.',
         'Signal lamp': 'Lanterna de sinais',
+        'Sections': 'Seções',
+        'Fullscreen white flash': 'Flash branco em tela cheia',
+        'More': 'Mais',
         'Nothing queued. Talk, type, or tap a procedure signal.': 'Nada na fila. Fale, digite ou toque em um sinal de procedimento.',
         'Idle': 'Ocioso',
         'Sending': 'Enviando',
@@ -283,6 +289,9 @@ const I18N = {
         'Good afternoon.': 'こんにちは。',
         'Good evening.': 'こんばんは。',
         'Signal lamp': '信号灯',
+        'Sections': 'セクション',
+        'Fullscreen white flash': '全画面の白い点滅',
+        'More': 'その他',
         'Nothing queued. Talk, type, or tap a procedure signal.': '待機中の文字はありません。話す、入力する、または符号ボタンを押してください。',
         'Idle': '待機',
         'Sending': '送信中',
@@ -416,6 +425,9 @@ const I18N = {
         'Good afternoon.': 'Добрый день.',
         'Good evening.': 'Добрый вечер.',
         'Signal lamp': 'Сигнальный фонарь',
+        'Sections': 'Разделы',
+        'Fullscreen white flash': 'Белая вспышка на весь экран',
+        'More': 'Ещё',
         'Nothing queued. Talk, type, or tap a procedure signal.': 'Очередь пуста. Говорите, печатайте или нажмите служебный сигнал.',
         'Idle': 'Ожидание',
         'Sending': 'Передача',
@@ -572,6 +584,13 @@ function applyAttrI18n() {
         const label = t(el.dataset.i18nTitle);
         el.title = label;
         el.setAttribute('aria-label', label);
+    });
+    // Labelled regions and text buttons: only the one attribute is set.
+    document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+        el.setAttribute('aria-label', t(el.dataset.i18nAria));
+    });
+    document.querySelectorAll('[data-i18n-tip]').forEach((el) => {
+        el.title = t(el.dataset.i18nTip);
     });
     const ta = document.getElementById('txText');
     if (ta) ta.placeholder = t('HELLO FROM THE BRIDGE');

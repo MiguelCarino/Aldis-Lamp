@@ -360,7 +360,7 @@ body.key-on .strobe .exit{opacity:0}
   </div>
 
   <!-- ===================== STAGE ===================== -->
-  <section class="stage" aria-label="Signal lamp">
+  <section class="stage" aria-label="Signal lamp" data-i18n-aria="Signal lamp">
     <div class="lamp-wrap">
       <svg class="lamp" viewBox="0 0 320 210" role="img" aria-labelledby="lampTitle">
         <title id="lampTitle" data-i18n>Signal lamp</title>
@@ -425,7 +425,7 @@ body.key-on .strobe .exit{opacity:0}
     </div>
   </section>
 
-  <nav class="tabbar" role="tablist" aria-label="Sections">
+  <nav class="tabbar" role="tablist" aria-label="Sections" data-i18n-aria="Sections">
     <button class="tab" role="tab" data-tab="tx"  aria-selected="true"  data-i18n>Send</button>
     <button class="tab" role="tab" data-tab="rx"  aria-selected="false" data-i18n>Receive</button>
     <button class="tab" role="tab" data-tab="set" aria-selected="false" data-i18n>Setup</button>
@@ -461,7 +461,7 @@ body.key-on .strobe .exit{opacity:0}
           <button class="btn btn-primary" id="sendBtn" data-act="send" data-i18n>Send</button>
           <button class="btn" id="pauseBtn" data-act="pause" data-i18n>Pause</button>
           <button class="btn danger" id="stopBtn" data-act="stop" data-i18n>Stop</button>
-          <button class="btn" id="strobeBtn" data-act="strobe" title="Fullscreen white flash">⛶ <span data-i18n>Strobe</span></button>
+          <button class="btn" id="strobeBtn" data-act="strobe" title="Fullscreen white flash" data-i18n-tip="Fullscreen white flash">⛶ <span data-i18n>Strobe</span></button>
         </div>
 
         <div>
@@ -486,7 +486,7 @@ body.key-on .strobe .exit{opacity:0}
         </div>
         <div class="row">
           <button class="btn btn-primary" id="camBtn" data-act="camera" data-i18n>Start camera</button>
-          <select id="camPick" style="flex:1 1 130px;width:auto" aria-label="Camera"></select>
+          <select id="camPick" style="flex:1 1 130px;width:auto" aria-label="Camera" data-i18n-aria="Camera"></select>
         </div>
         <canvas class="scope" id="scope" width="600" height="64"></canvas>
         <div class="row tight">
