@@ -384,6 +384,7 @@ body.key-on .strobe .exit{opacity:0}
 :root[data-carino-theme="color"] .readout-line .now{background:var(--accent-glow)}
 :root[data-carino-theme="color"] .panel{box-shadow:var(--ct-shadow-1)}
 :root[data-carino-theme="color"] .panel-head{background:var(--bg-elev)}
+:root[data-carino-theme="color"] .panel .panel-head h2{color:var(--ct-purple)}
 :root[data-carino-theme="color"] .led{background:var(--ct-scroll)}
 :root[data-carino-theme="color"] .cam-stage.idle,:root[data-carino-theme="color"] .cam-stage.idle video{background:var(--bg-elev)}
 :root[data-carino-theme="color"] .roi.hot{border-color:var(--accent)}
@@ -1568,7 +1569,7 @@ let scopeInk = null;
 function readScopeInk() {
   const cs = getComputedStyle(document.documentElement), tok = n => cs.getPropertyValue(n).trim();
   scopeInk = document.documentElement.dataset.carinoTheme === 'color'
-    ? { on: tok('--ct-scroll'), off: tok('--border'), trace: tok('--accent') }
+    ? { on: tok('--ct-scroll'), off: tok('--border'), trace: tok('--ct-teal') }
     : { on: '#262626', off: '#1c1c1c', trace: '#eab308' };
   return scopeInk;
 }
