@@ -364,9 +364,6 @@ body.key-on .strobe .exit{opacity:0}
 <!-- Colourful theme + the switch; nothing applies until data-carino-theme="color". -->
 <link rel="stylesheet" href="carino-theme.css">
 <style>
-/* the hero mark in both colourings; the theme picks one */
-.mark.mk-color,:root[data-carino-theme="color"] .mark.mk-gold{display:none}
-:root[data-carino-theme="color"] .mark.mk-color{display:block}
 /* Colourful: carino-theme.css remaps the tokens, so everything that reads one
    follows; these are the values above that were written for black. The lamp
    drawing, the camera feed and the fullscreen strobe stay as they are: a lamp
@@ -402,8 +399,6 @@ body.key-on .strobe .exit{opacity:0}
 <main class="app col">
 
   <div class="short-hero rail-head">
-    <img class="mark mk-gold" src="logo.svg" alt="" width="32" height="32">
-    <img class="mark mk-color" src="logo-color.svg" alt="" width="32" height="32">
     <div><h1>Aldis Lamp</h1><p class="sh-lede" data-i18n>Speak or type, and the lamp flashes it in Morse. Point the camera at a lamp to read one back.</p></div>
   </div>
 
