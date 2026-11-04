@@ -392,6 +392,22 @@ body.key-on .strobe .exit{opacity:0}
 </style>
 </head>
 <body>
+<!-- Key words: the navbar shows them, translated, under its Language tab. -->
+<ul data-carino-words hidden>
+  <li>Send</li>
+  <li>Receive</li>
+  <li>Transmit</li>
+  <li>Strobe</li>
+  <li>Speed</li>
+  <li>Start listening</li>
+</ul>
+
+
+<!-- What this page must say: the navbar shows it in its About window. -->
+<div data-carino-about hidden>
+  <p><span><span data-i18n>Runs in your browser. Nothing you add here is uploaded.</span> <span class="pl-also" data-i18n>In Chrome, speech is recognised by Google’s servers unless the on-device pack is installed.</span></span></p>
+</div>
+
 <div class="app-actions" data-carino-actions>
   <button class="icon-btn" data-act="mic" data-priority="1" aria-pressed="false" aria-label="Microphone" title="Microphone" data-i18n-title="Microphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg></button>
   <button class="icon-btn" data-act="strobe" aria-pressed="false" aria-label="Fullscreen strobe" title="Fullscreen strobe" data-i18n-title="Fullscreen strobe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8V3h5"/><path d="M21 8V3h-5"/><path d="M3 16v5h5"/><path d="M21 16v5h-5"/><circle cx="12" cy="12" r="3"/></svg></button>
@@ -644,7 +660,6 @@ body.key-on .strobe .exit{opacity:0}
     </div>
   </section>
 
-  <p class="privacy-line"><span><span data-i18n>Runs in your browser. Nothing you add here is uploaded.</span> <span class="pl-also" data-i18n>In Chrome, speech is recognised by Google’s servers unless the on-device pack is installed.</span></span></p>
 </main>
 
 <div class="thumbbar" id="thumbbar">
